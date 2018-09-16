@@ -38,6 +38,13 @@ export default {
   define: {
     APP_TYPE: process.env.APP_TYPE || '',
   },
+  proxy: {
+    '/api/todo*': {
+      target: 'http://jsonplaceholder.typicode.com/',
+      changeOrigin: true,
+      pathRewrite: { '^/api': '' },
+    },
+  },
   // 路由配置
   routes: pageRoutes,
   // Theme for antd

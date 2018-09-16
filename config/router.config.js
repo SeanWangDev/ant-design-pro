@@ -200,6 +200,19 @@ export default [
         ],
       },
       {
+        name: 'todo',
+        icon: 'todo',
+        path: '/todo',
+        hideChildrenInMenu: true,
+        routes: [
+          {
+            path: '/todo',
+            name: 'todo-list',
+            component: './Todo/Todos',
+          },
+        ],
+      },
+      {
         name: 'account',
         icon: 'user',
         path: '/account',

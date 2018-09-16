@@ -28,6 +28,7 @@ export default {
   'menu.result': '结果页',
   'menu.result.success': '成功页',
   'menu.result.fail': '失败页',
+  'menu.todo': '待办事项',
   'menu.exception': '异常页',
   'menu.exception.not-permission': '403',
   'menu.exception.not-find': '404',
