@@ -10,14 +10,14 @@ export default {
 
   effects: {
     *fetchNotices(_, { call, put }) {
-      const data = yield call(queryNotices);
+      const response = yield call(queryNotices);
       yield put({
         type: 'saveNotices',
-        payload: data,
+        payload: response.data,
       });
       yield put({
         type: 'user/changeNotifyCount',
-        payload: data.length,
+        payload: response.data.length,
       });
     },
     *clearNotices({ payload }, { put, select }) {

@@ -12,7 +12,7 @@ export default {
       const response = yield call(queryTags);
       yield put({
         type: 'saveTags',
-        payload: response.list,
+        payload: response.data.list,
       });
     },
   },

@@ -15,14 +15,14 @@ export default {
       const response = yield call(queryBasicProfile);
       yield put({
         type: 'show',
-        payload: response,
+        payload: response.data,
       });
     },
     *fetchAdvanced(_, { call, put }) {
       const response = yield call(queryAdvancedProfile);
       yield put({
         type: 'show',
-        payload: response,
+        payload: response.data,
       });
     },
   },

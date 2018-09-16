@@ -63,7 +63,7 @@ const cachedSave = (response, hashcode) => {
  * @param  {object} [options] The options we want to pass to "fetch"
  * @return {object}           An object containing either "data" or "err"
  */
-export default function request(
+export default async function request(
   url,
   options = {
     expirys: isAntdPro(),
@@ -119,38 +119,52 @@ export default function request(
       sessionStorage.removeItem(`${hashcode}:timestamp`);
     }
   }
-  return fetch(url, newOptions)
-    .then(checkStatus)
-    .then(response => cachedSave(response, hashcode))
-    .then(response => {
-      // DELETE and 204 do not return data by default
-      // using .json will report an error.
-      if (newOptions.method === 'DELETE' || response.status === 204) {
-        return response.text();
-      }
-      return response.json();
-    })
-    .catch(e => {
-      const status = e.name;
-      if (status === 401) {
-        // @HACK
-        /* eslint-disable no-underscore-dangle */
-        window.g_app._store.dispatch({
-          type: 'login/logout',
-        });
-        return;
-      }
-      // environment should not be used
-      if (status === 403) {
-        router.push('/exception/403');
-        return;
-      }
-      if (status <= 504 && status >= 500) {
-        router.push('/exception/500');
-        return;
-      }
-      if (status >= 404 && status < 422) {
-        router.push('/exception/404');
-      }
-    });
+  const response = await fetch(url, newOptions);
+
+  try {
+    checkStatus(response);
+  } catch (e) {
+    const status = e.name;
+    if (status === 401) {
+      // @HACK
+      /* eslint-disable no-underscore-dangle */
+      window.g_app._store.dispatch({
+        type: 'login/logout',
+      });
+      return {};
+    }
+    // environment should not be used
+    if (status === 403) {
+      router.push('/exception/403');
+      return {};
+    }
+    if (status <= 504 && status >= 500) {
+      router.push('/exception/500');
+      return {};
+    }
+    if (status >= 404 && status < 422) {
+      router.push('/exception/404');
+      return {};
+    }
+  }
+
+  cachedSave(response, hashcode);
+
+  let data;
+  if (newOptions.method === 'DELETE' || response.status === 204) {
+    data = await response.text();
+  } else {
+    data = await response.json();
+  }
+
+  const ret = {
+    data,
+    headers: {},
+  };
+
+  // 如果有x-total-count在header中，则存入headers返回对象中
+  if (response.headers.get('x-total-count')) {
+    ret.headers['x-total-count'] = response.headers.get('x-total-count');
+  }
+  return ret;
 }
