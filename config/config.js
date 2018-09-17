@@ -45,6 +45,7 @@ export default {
       pathRewrite: { '^/api': '' },
     },
   },
+  devtool: 'cheap-module-eval-source-map',
   // 路由配置
   routes: pageRoutes,
   // Theme for antd

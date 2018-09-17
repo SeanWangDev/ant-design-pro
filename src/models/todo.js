@@ -1,4 +1,4 @@
-import { query } from '@/services/todo';
+import { findAll } from '@/services/todo';
 
 export default {
   namespace: 'todo',
@@ -23,7 +23,7 @@ export default {
       },
       { call, put }
     ) {
-      const response = yield call(query, { page });
+      const response = yield call(findAll, { page });
       yield put({
         type: 'save',
         payload: { data: response.data, total: response.headers['x-total-count'] },
@@ -32,9 +32,9 @@ export default {
   },
   subscriptions: {
     setup({ dispatch, history }) {
-      return history.listen(({ pathname, todoQuery }) => {
+      return history.listen(({ pathname, query }) => {
         if (pathname === '/todo') {
-          dispatch({ type: 'fetch', payload: todoQuery });
+          dispatch({ type: 'fetch', payload: query });
         }
       });
     },
