@@ -39,7 +39,7 @@ export default {
     APP_TYPE: process.env.APP_TYPE || '',
   },
   proxy: {
-    '/api/todo*': {
+    '/api/todos': {
       target: 'http://jsonplaceholder.typicode.com/',
       changeOrigin: true,
       pathRewrite: { '^/api': '' },
